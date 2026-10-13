@@ -1,0 +1,522 @@
+{% extends 'base.html' %}
+
+{% block title %}Employee Management | HRMS{% endblock %}
+
+{% block content %}
+
+<style>
+    .employee-page {
+        padding: 20px 0 40px;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #0d6efd, #4f8df7);
+        color: white;
+        border-radius: 18px;
+        padding: 28px;
+        margin-bottom: 24px;
+        box-shadow: 0 8px 25px rgba(13, 110, 253, 0.15);
+    }
+
+    .page-header h2 {
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .page-header p {
+        margin-bottom: 0;
+        opacity: 0.9;
+    }
+
+    .filter-card {
+        background: white;
+        border: 0;
+        border-radius: 16px;
+        padding: 22px;
+        margin-bottom: 24px;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+    }
+
+    .filter-title {
+        font-weight: 700;
+        margin-bottom: 18px;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 44px;
+        border-radius: 9px;
+    }
+
+    .employee-card {
+        background: white;
+        border: 0;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+        overflow: hidden;
+    }
+
+    .employee-card-header {
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .employee-card-header h5 {
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .employee-card-header p {
+        margin-bottom: 0;
+        color: #6c757d;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table th {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        color: #6c757d;
+        white-space: nowrap;
+        padding: 15px;
+    }
+
+    .table td {
+        padding: 15px;
+    }
+
+    .employee-id {
+        font-weight: 700;
+        color: #0d6efd;
+    }
+
+    .employee-name {
+        font-weight: 600;
+    }
+
+    .employee-email {
+        font-size: 13px;
+    }
+
+    .salary {
+        font-weight: 600;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    .action-buttons .btn {
+        border-radius: 7px;
+    }
+
+    .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        font-size: 55px;
+        margin-bottom: 15px;
+    }
+
+    .empty-state h5 {
+        font-weight: 700;
+    }
+</style>
+
+<div class="container employee-page">
+
+    <!-- Header -->
+    <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+        <div>
+            <h2>Employee Management</h2>
+
+            <p>
+                Manage employee records, departments, designations and employment status.
+            </p>
+        </div>
+
+        <a href="{% url 'employee_create' %}"
+           class="btn btn-light fw-semibold">
+            + Add Employee
+        </a>
+
+    </div>
+
+
+    <!-- Filters -->
+    <div class="filter-card">
+
+        <div class="filter-title">
+            🔎 Search & Filter Employees
+        </div>
+
+        <form method="GET">
+
+            <div class="row g-3">
+
+                <!-- Search -->
+                <div class="col-md-5">
+
+                    <label class="form-label fw-semibold">
+                        Search Employee
+                    </label>
+
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Employee ID, name or email..."
+                        value="{{ search }}"
+                    >
+
+                </div>
+
+
+                <!-- Department -->
+                <div class="col-md-3">
+
+                    <label class="form-label fw-semibold">
+                        Department
+                    </label>
+
+                    <select name="department" class="form-select">
+
+                        <option value="">
+                            All Departments
+                        </option>
+
+                        {% for department in departments %}
+
+                            <option
+                                value="{{ department.id }}"
+                                {% if selected_department == department.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ department.name }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- Status -->
+                <div class="col-md-2">
+
+                    <label class="form-label fw-semibold">
+                        Status
+                    </label>
+
+                    <select name="status" class="form-select">
+
+                        <option value="">
+                            All Status
+                        </option>
+
+                        <option value="ACTIVE"
+                            {% if selected_status == "ACTIVE" %}
+                                selected
+                            {% endif %}>
+                            Active
+                        </option>
+
+                        <option value="INACTIVE"
+                            {% if selected_status == "INACTIVE" %}
+                                selected
+                            {% endif %}>
+                            Inactive
+                        </option>
+
+                        <option value="ON_LEAVE"
+                            {% if selected_status == "ON_LEAVE" %}
+                                selected
+                            {% endif %}>
+                            On Leave
+                        </option>
+
+                        <option value="RESIGNED"
+                            {% if selected_status == "RESIGNED" %}
+                                selected
+                            {% endif %}>
+                            Resigned
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Buttons -->
+                <div class="col-md-2 d-flex align-items-end gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100">
+
+                        Filter
+
+                    </button>
+
+                    <a
+                        href="{% url 'employee_list' %}"
+                        class="btn btn-outline-secondary">
+
+                        Clear
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- Employee Table -->
+    <div class="employee-card">
+
+        <div class="employee-card-header">
+
+            <h5>
+                Employee Records
+            </h5>
+
+            <p>
+                View and manage all registered employees.
+            </p>
+
+        </div>
+
+
+        {% if employees %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>Employee ID</th>
+
+                            <th>Employee</th>
+
+                            <th>Department</th>
+
+                            <th>Designation</th>
+
+                            <th>Salary</th>
+
+                            <th>Status</th>
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for employee in employees %}
+
+                            <tr>
+
+                                <!-- ID -->
+                                <td>
+
+                                    <span class="employee-id">
+                                        {{ employee.employee_id }}
+                                    </span>
+
+                                </td>
+
+
+                                <!-- Employee -->
+                                <td>
+
+                                    <div class="employee-name">
+                                        {{ employee.first_name }}
+                                        {{ employee.last_name }}
+                                    </div>
+
+                                    <div class="employee-email text-muted">
+                                        {{ employee.email }}
+                                    </div>
+
+                                </td>
+
+
+                                <!-- Department -->
+                                <td>
+
+                                    {% if employee.department %}
+
+                                        <span class="badge bg-light text-dark border">
+                                            {{ employee.department.name }}
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="text-muted">
+                                            Unassigned
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Designation -->
+                                <td>
+                                    {{ employee.designation }}
+                                </td>
+
+
+                                <!-- Salary -->
+                                <td>
+
+                                    <span class="salary">
+                                        ₹{{ employee.salary }}
+                                    </span>
+
+                                </td>
+
+
+                                <!-- Status -->
+                                <td>
+
+                                    {% if employee.employment_status == 'ACTIVE' %}
+
+                                        <span class="badge bg-success">
+                                            Active
+                                        </span>
+
+                                    {% elif employee.employment_status == 'ON_LEAVE' %}
+
+                                        <span class="badge bg-warning text-dark">
+                                            On Leave
+                                        </span>
+
+                                    {% elif employee.employment_status == 'RESIGNED' %}
+
+                                        <span class="badge bg-danger">
+                                            Resigned
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-secondary">
+                                            Inactive
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Actions -->
+                                <td>
+
+                                    <div class="action-buttons">
+
+                                        <a
+                                            href="{% url 'employee_detail' employee.id %}"
+                                            class="btn btn-sm btn-outline-primary">
+
+                                            View
+
+                                        </a>
+
+                                        <a
+                                            href="{% url 'employee_update' employee.id %}"
+                                            class="btn btn-sm btn-outline-warning">
+
+                                            Edit
+
+                                        </a>
+
+                                        <a
+                                            href="{% url 'employee_delete' employee.id %}"
+                                            class="btn btn-sm btn-outline-danger">
+
+                                            Delete
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <!-- Empty State -->
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    👥
+                </div>
+
+                <h5>
+                    No Employees Found
+                </h5>
+
+                <p class="text-muted">
+                    No employee records match your current search or filters.
+                </p>
+
+                <a
+                    href="{% url 'employee_create' %}"
+                    class="btn btn-primary">
+
+                    + Add Employee
+
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Back -->
+    <div class="mt-4">
+
+        <a
+            href="{% url 'home' %}"
+            class="btn btn-outline-secondary">
+
+            ← Back to Home
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}  

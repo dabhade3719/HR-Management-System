@@ -1,0 +1,139 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Performance Review Details</h2>
+            <p class="text-muted mb-0">
+                Employee appraisal and reviewer feedback
+            </p>
+        </div>
+
+        <a href="{% url 'performance_list' %}"
+           class="btn btn-outline-secondary">
+            ← Back to Reviews
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+
+            <h5 class="fw-bold mb-3">Employee Information</h5>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <small class="text-muted">Employee Name</small>
+                    <p class="fw-semibold mb-0">
+                        {{ review.employee.first_name }}
+                        {{ review.employee.last_name }}
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted">Employee ID</small>
+                    <p class="fw-semibold mb-0">
+                        {{ review.employee.employee_id }}
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted">Department</small>
+                    <p class="fw-semibold mb-0">
+                        {{ review.employee.department }}
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted">Designation</small>
+                    <p class="fw-semibold mb-0">
+                        {{ review.employee.designation }}
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+
+            <h5 class="fw-bold mb-3">Review Summary</h5>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <small class="text-muted">Rating</small>
+                    <h3 class="text-primary fw-bold">
+                        {{ review.rating }}/5
+                    </h3>
+                    <span class="badge bg-primary">
+                        {{ review.get_rating_display }}
+                    </span>
+                </div>
+
+                <div class="col-md-4">
+                    <small class="text-muted">Review Start Date</small>
+                    <p class="fw-semibold">
+                        {{ review.review_period_start|date:"d M Y" }}
+                    </p>
+                </div>
+
+                <div class="col-md-4">
+                    <small class="text-muted">Review End Date</small>
+                    <p class="fw-semibold">
+                        {{ review.review_period_end|date:"d M Y" }}
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted">Reviewed By</small>
+                    <p class="fw-semibold">
+                        {{ review.reviewer|default:"Not assigned" }}
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted">Created On</small>
+                    <p class="fw-semibold">
+                        {{ review.created_at|date:"d M Y, h:i A" }}
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+
+            <h5 class="fw-bold mb-3">Performance Feedback</h5>
+
+            <div class="mb-4">
+                <h6 class="fw-semibold">Goals Achieved</h6>
+                <p class="text-muted">{{ review.goals_achieved|linebreaksbr }}</p>
+            </div>
+
+            <div class="mb-4">
+                <h6 class="fw-semibold">Strengths</h6>
+                <p class="text-muted">{{ review.strengths|linebreaksbr }}</p>
+            </div>
+
+            <div class="mb-4">
+                <h6 class="fw-semibold">Areas for Improvement</h6>
+                <p class="text-muted">{{ review.areas_for_improvement|linebreaksbr }}</p>
+            </div>
+
+            <div>
+                <h6 class="fw-semibold">Reviewer Feedback</h6>
+                <p class="text-muted">{{ review.reviewer_feedback|linebreaksbr }}</p>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

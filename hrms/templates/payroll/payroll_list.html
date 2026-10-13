@@ -1,0 +1,266 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    .payroll-page {
+        padding: 25px 0;
+    }
+
+    .payroll-header {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        padding: 28px;
+        border-radius: 16px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.20);
+    }
+
+    .payroll-header h2 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .payroll-header p {
+        margin: 8px 0 0;
+        opacity: 0.9;
+    }
+
+    .payroll-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .payroll-table {
+        width: 100%;
+        min-width: 950px;
+        border-collapse: collapse;
+    }
+
+    .payroll-table th {
+        background: #f1f5f9;
+        color: #334155;
+        font-size: 14px;
+        padding: 15px;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .payroll-table td {
+        padding: 15px;
+        border-bottom: 1px solid #e2e8f0;
+        white-space: nowrap;
+        color: #475569;
+    }
+
+    .payroll-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .employee-name {
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .salary {
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .net-salary {
+        font-weight: 700;
+        color: #2563eb;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .paid {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .unpaid {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        color: #64748b;
+    }
+
+    .empty-state h4 {
+        color: #334155;
+        margin-bottom: 8px;
+    }
+
+    .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 18px;
+        border-radius: 8px;
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .back-btn:hover {
+        background: #1d4ed8;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .payroll-header {
+            padding: 20px;
+        }
+
+        .payroll-card {
+            padding: 12px;
+        }
+    }
+</style>
+
+
+<div class="container payroll-page">
+
+    <!-- Header -->
+    <div class="payroll-header">
+        <h2>Payroll Management</h2>
+        <p>
+            Manage and monitor employee salary records and payment status.
+        </p>
+    </div>
+
+
+    <!-- Payroll Table -->
+    <div class="payroll-card">
+
+        <div class="table-responsive">
+
+            <table class="payroll-table">
+
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Month</th>
+                        <th>Year</th>
+                        <th>Basic Salary</th>
+                        <th>Allowances</th>
+                        <th>Deductions</th>
+                        <th>Net Salary</th>
+                        <th>Payment Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in payrolls %}
+
+                    <tr>
+
+                        <td>
+                            <span class="employee-name">
+                                {{ item.employee.username }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ item.month }}
+                        </td>
+
+                        <td>
+                            {{ item.year }}
+                        </td>
+
+                        <td class="salary">
+                            ₹{{ item.basic_salary }}
+                        </td>
+
+                        <td>
+                            ₹{{ item.allowances }}
+                        </td>
+
+                        <td>
+                            ₹{{ item.deductions }}
+                        </td>
+
+                        <td class="net-salary">
+                            ₹{{ item.net_salary }}
+                        </td>
+
+                        <td>
+
+                            {% if item.is_paid %}
+
+                                <span class="status paid">
+                                    ✓ Paid
+                                </span>
+
+                            {% else %}
+
+                                <span class="status unpaid">
+                                    ✕ Unpaid
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="8">
+
+                            <div class="empty-state">
+
+                                <h4>No Payroll Records</h4>
+
+                                <p>
+                                    No payroll records are available currently.
+                                </p>
+
+                                <small>
+                                    Add payroll records from Django Admin.
+                                </small>
+
+                            </div>
+
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- Back -->
+    <a href="/" class="back-btn">
+        ← Back to Home
+    </a>
+
+</div>
+
+{% endblock %}

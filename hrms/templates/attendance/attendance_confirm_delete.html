@@ -1,0 +1,37 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Delete Attendance | HRMS{% endblock %}
+
+{% block content %}
+
+<div class="content-card">
+
+    <h2 class="fw-bold text-danger">Delete Attendance</h2>
+
+    <p>
+        Are you sure you want to delete the attendance record for
+        <strong>
+            {{ record.employee.first_name }}
+            {{ record.employee.last_name }}
+        </strong>
+        dated
+        <strong>{{ record.date|date:"d M Y" }}</strong>?
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <button type="submit" class="btn btn-danger">
+            Yes, Delete
+        </button>
+
+        <a href="{% url 'attendance_list' %}"
+           class="btn btn-outline-secondary">
+            Cancel
+        </a>
+    </form>
+
+</div>
+
+{% endblock %}

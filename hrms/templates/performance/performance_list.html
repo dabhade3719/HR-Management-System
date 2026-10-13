@@ -1,0 +1,231 @@
+
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-1">Performance Reviews</h2>
+            <p class="text-muted mb-0">
+                Employee appraisals, ratings and feedback.
+            </p>
+        </div>
+
+        {% if user.is_superuser or user.profile.role == 'ADMIN' or user.profile.role == 'HR' or user.profile.role == 'MANAGER' %}
+        <a href="{% url 'performance_create' %}" class="btn btn-primary">
+            + Add Performance Review
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Success Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Search and Rating Filter -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3 align-items-end">
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Search Employee</label>
+                    <input
+                        type="text"
+                        name="q"
+                        class="form-control"
+                        placeholder="Enter employee name or ID"
+                        value="{{ search_query }}"
+                    >
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Filter by Rating</label>
+                    <select name="rating" class="form-select">
+                        <option value="">All Ratings</option>
+                        <option value="5" {% if selected_rating == '5' %}selected{% endif %}>5 - Outstanding</option>
+                        <option value="4" {% if selected_rating == '4' %}selected{% endif %}>4 - Exceeds Expectations</option>
+                        <option value="3" {% if selected_rating == '3' %}selected{% endif %}>3 - Meets Expectations</option>
+                        <option value="2" {% if selected_rating == '2' %}selected{% endif %}>2 - Needs Improvement</option>
+                        <option value="1" {% if selected_rating == '1' %}selected{% endif %}>1 - Poor</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+
+                    <a href="{% url 'performance_list' %}"
+                       class="btn btn-outline-secondary">
+                        Reset
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Performance Reviews Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th class="px-3">Employee</th>
+                            <th>Review Period</th>
+                            <th>Rating</th>
+                            <th>Reviewer</th>
+                            <th>Created On</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for review in reviews %}
+                        <tr>
+                            <td class="px-3">
+                                <strong>
+                                    {{ review.employee.first_name }}
+                                    {{ review.employee.last_name }}
+                                </strong>
+                                <div class="text-muted small">
+                                    {{ review.employee.employee_id }}
+                                </div>
+                            </td>
+
+                            <td>
+                                {{ review.review_period_start|date:"d M Y" }}
+                                -
+                                {{ review.review_period_end|date:"d M Y" }}
+                            </td>
+
+                            <td>
+                                <span class="badge bg-primary">
+                                    {{ review.rating }}/5
+                                </span>
+                                <div class="small text-muted">
+                                    {{ review.get_rating_display }}
+                                </div>
+                            </td>
+
+                            <td>
+                                {% if review.reviewer %}
+                                    {{ review.reviewer.username }}
+                                {% else %}
+                                    Not assigned
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ review.created_at|date:"d M Y" }}
+                            </td>
+
+                            <td>
+                                <a href="{% url 'performance_detail' review.pk %}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                No performance reviews found.
+                                Try changing your search or rating filter.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+        <small class="text-muted">
+            Total matching reviews: {{ page_obj.paginator.count }}
+        </small>
+
+        <small class="text-muted">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </small>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav aria-label="Performance review pages" class="mt-3">
+        <ul class="pagination justify-content-center flex-wrap">
+
+            <!-- Previous -->
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?q={{ search_query|urlencode }}&rating={{ selected_rating|urlencode }}&page={{ page_obj.previous_page_number }}">
+                    Previous
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+            </li>
+            {% endif %}
+
+            <!-- Page Numbers -->
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?q={{ search_query|urlencode }}&rating={{ selected_rating|urlencode }}&page={{ num }}">
+                        {{ num }}
+                    </a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            <!-- Next -->
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?q={{ search_query|urlencode }}&rating={{ selected_rating|urlencode }}&page={{ page_obj.next_page_number }}">
+                    Next
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Next</span>
+            </li>
+            {% endif %}
+
+        </ul>
+    </nav>
+    {% endif %}
+
+    <!-- Back Button -->
+    <div class="mt-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

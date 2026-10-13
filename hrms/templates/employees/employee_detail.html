@@ -1,0 +1,160 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Employee Profile | HRMS{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold">Employee Profile</h2>
+        <p class="text-muted mb-0">Complete employee information</p>
+    </div>
+
+    <a href="{% url 'employee_list' %}" class="btn btn-outline-secondary">
+        Back to Employees
+    </a>
+</div>
+
+<div class="content-card">
+
+    <div class="row align-items-center mb-4">
+
+        <div class="col-md-3 text-center">
+            {% if employee.profile_photo %}
+                <img
+                    src="{{ employee.profile_photo.url }}"
+                    alt="Employee Photo"
+                    class="img-thumbnail rounded-circle"
+                    style="width: 150px; height: 150px; object-fit: cover;"
+                >
+            {% else %}
+                <div
+                    class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto"
+                    style="width: 150px; height: 150px; font-size: 45px;"
+                >
+                    {{ employee.first_name|first|upper }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-9 mt-3 mt-md-0">
+            <h3 class="fw-bold">
+                {{ employee.first_name }} {{ employee.last_name }}
+            </h3>
+
+            <p class="text-muted mb-2">
+                {{ employee.designation }}
+            </p>
+
+            <p class="mb-2">
+                <strong>Employee ID:</strong> {{ employee.employee_id }}
+            </p>
+
+            <span class="badge {% if employee.employment_status == 'ACTIVE' %}text-bg-success{% elif employee.employment_status == 'ON_LEAVE' %}text-bg-warning{% else %}text-bg-secondary{% endif %}">
+                {{ employee.get_employment_status_display }}
+            </span>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <h5 class="fw-bold mb-3">Personal Information</h5>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+                <small class="text-muted">Email</small>
+                <div class="fw-semibold">{{ employee.email }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+                <small class="text-muted">Phone</small>
+                <div class="fw-semibold">{{ employee.phone }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+                <small class="text-muted">Date of Birth</small>
+                <div class="fw-semibold">
+                    {{ employee.date_of_birth|date:"d M Y"|default:"Not provided" }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+                <small class="text-muted">Gender</small>
+                <div class="fw-semibold">{{ employee.get_gender_display }}</div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="p-3 bg-light rounded">
+                <small class="text-muted">Address</small>
+                <div class="fw-semibold">
+                    {{ employee.address|default:"Not provided" }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <h5 class="fw-bold mb-3">Employment Information</h5>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+                <small class="text-muted">Department</small>
+                <div class="fw-semibold">
+                    {{ employee.department|default:"Not assigned" }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+                <small class="text-muted">Designation</small>
+                <div class="fw-semibold">{{ employee.designation }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+                <small class="text-muted">Joining Date</small>
+                <div class="fw-semibold">
+                    {{ employee.joining_date|date:"d M Y" }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+                <small class="text-muted">Salary</small>
+                <div class="fw-semibold">₹{{ employee.salary }}</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="d-flex gap-2">
+        <a href="{% url 'employee_update' employee.id %}"
+           class="btn btn-primary">
+            Edit Employee
+        </a>
+
+        <a href="{% url 'employee_delete' employee.id %}"
+           class="btn btn-outline-danger">
+            Delete Employee
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

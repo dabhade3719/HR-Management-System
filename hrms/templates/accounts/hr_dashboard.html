@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    .hr-wrapper {
+        padding: 25px 0 40px;
+    }
+
+    .hero {
+        background: linear-gradient(135deg, #0d6efd, #4f8df7);
+        color: white;
+        border-radius: 18px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 25px rgba(13, 110, 253, 0.18);
+    }
+
+    .hero h2 {
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .hero p {
+        margin-bottom: 0;
+        opacity: 0.9;
+    }
+
+    .stat-card {
+        border: 0;
+        border-radius: 16px;
+        background: white;
+        padding: 22px;
+        height: 100%;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+        transition: 0.2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        background: #eef4ff;
+        margin-bottom: 15px;
+    }
+
+    .stat-card h3 {
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .stat-card p {
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .section-title {
+        font-weight: 700;
+        margin: 30px 0 15px;
+    }
+
+    .module-card {
+        background: white;
+        border: 0;
+        border-radius: 16px;
+        padding: 24px;
+        height: 100%;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+        transition: 0.2s;
+    }
+
+    .module-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .module-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+
+    .module-card h5 {
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .module-card p {
+        color: #6c757d;
+        min-height: 45px;
+    }
+
+    .module-btn {
+        display: inline-block;
+        text-decoration: none;
+        background: #0d6efd;
+        color: white;
+        padding: 9px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .module-btn:hover {
+        background: #0b5ed7;
+        color: white;
+    }
+
+    .logout-btn {
+        text-decoration: none;
+        color: #dc3545;
+        font-weight: 600;
+    }
+</style>
+
+<div class="container hr-wrapper">
+
+    <!-- Hero -->
+    <div class="hero">
+        <h2>HR Dashboard</h2>
+        <p>
+            Welcome, {{ request.user.get_full_name|default:request.user.username }}.
+            Manage employees, attendance, leaves, payroll and recruitment from one place.
+        </p>
+    </div>
+
+    <!-- Quick Stats -->
+    <h4 class="section-title">HR Overview</h4>
+
+    <div class="row g-4">
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <h3>Employees</h3>
+                <p>Employee Management</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon">🕒</div>
+                <h3>Attendance</h3>
+                <p>Daily Attendance</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <h3>Leaves</h3>
+                <p>Leave Applications</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <h3>Payroll</h3>
+                <p>Salary Management</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Management Modules -->
+    <h4 class="section-title">Management Modules</h4>
+
+    <div class="row g-4">
+
+        <!-- Employees -->
+        <div class="col-md-6 col-lg-4">
+            <div class="module-card">
+                <div class="module-icon">👥</div>
+                <h5>Employee Management</h5>
+                <p>
+                    Add, edit, delete and view employee records.
+                </p>
+                <a href="{% url 'employee_list' %}" class="module-btn">
+                    Manage Employees
+                </a>
+            </div>
+        </div>
+
+        <!-- Attendance -->
+        <div class="col-md-6 col-lg-4">
+            <div class="module-card">
+                <div class="module-icon">🕒</div>
+                <h5>Attendance Management</h5>
+                <p>
+                    Manage daily employee attendance records.
+                </p>
+                <a href="{% url 'attendance_list' %}" class="module-btn">
+                    Manage Attendance
+                </a>
+            </div>
+        </div>
+
+        <!-- Attendance Report -->
+        <div class="col-md-6 col-lg-4">
+            <div class="module-card">
+                <div class="module-icon">📊</div>
+                <h5>Attendance Reports</h5>
+                <p>
+                    View monthly attendance and working-hour reports.
+                </p>
+                <a href="{% url 'attendance_report' %}" class="module-btn">
+                    View Reports
+                </a>
+            </div>
+        </div>
+
+        <!-- Leave -->
+        <div class="col-md-6 col-lg-4">
+            <div class="module-card">
+                <div class="module-icon">🏖️</div>
+                <h5>Leave Management</h5>
+                <p>
+                    Review and approve or reject employee leave requests.
+                </p>
+                <a href="{% url 'manage_leaves' %}" class="module-btn">
+                    Manage Leaves
+                </a>
+            </div>
+        </div>
+
+        <!-- Payroll -->
+        <div class="col-md-6 col-lg-4">
+            <div class="module-card">
+                <div class="module-icon">💰</div>
+                <h5>Payroll Management</h5>
+                <p>
+                    View and manage employee salary and payroll records.
+                </p>
+                <a href="{% url 'payroll_list' %}" class="module-btn">
+                    Manage Payroll
+                </a>
+            </div>
+        </div>
+        
+         
+        <!-- Performance Management -->
+        <div class="col-md-6 col-lg-4">
+            <div class="module-card">
+                <div class="module-icon">⭐</div>
+                <h5>Performance Management</h5>
+                <p>
+                    Review employee performance, ratings, achievements and feedback.
+                </p>
+                <a href="{% url 'performance_list' %}" class="module-btn">
+                    Manage Performance
+                </a>
+            </div>
+        </div>
+
+        
+        <!-- Recruitment -->
+        <div class="col-md-6 col-lg-4">
+            <div class="module-card">
+                <div class="module-icon">💼</div>
+                <h5>Recruitment</h5>
+                <p>
+                    Manage job openings and candidate applications.
+                </p>
+                <a href="{% url 'recruitment_dashboard' %}" class="module-btn">
+                    Manage Recruitment
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom -->
+    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+            ← Home
+        </a>
+
+        <a href="{% url 'logout' %}" class="logout-btn">
+            Logout
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
