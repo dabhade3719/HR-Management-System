@@ -1,5 +1,4 @@
 # HR-Management-System
-# HR Management System (HRMS)
 
 A web-based Human Resource Management System built with **Django**. It covers the everyday work of an HR department: employee records, departments, attendance, leave requests, payroll, recruitment, performance reviews, and in-app notifications, all with role-based access.
 
