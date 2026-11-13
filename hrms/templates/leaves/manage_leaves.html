@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+
+        <div>
+            <h2 class="fw-bold mb-1">Leave Management</h2>
+
+            <p class="text-muted mb-0">
+                Review and manage employee leave applications.
+            </p>
+        </div>
+
+        <a href="{% url 'home' %}"
+           class="btn btn-outline-secondary">
+            ← Back to Home
+        </a>
+
+    </div>
+
+
+    <!-- Messages -->
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="alert alert-info alert-dismissible fade show">
+
+                {{ message }}
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    {% if leaves %}
+
+    <!-- Leave Table -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white p-3">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <h5 class="fw-bold mb-1">
+                        Employee Leave Requests
+                    </h5>
+
+                    <small class="text-muted">
+                        Review pending requests and view leave history.
+                    </small>
+
+                </div>
+
+                <span class="badge bg-primary">
+                    {{ leaves|length }} Request{{ leaves|length|pluralize }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th class="px-3">#</th>
+
+                            <th>Employee</th>
+
+                            <th>Leave Type</th>
+
+                            <th>Start Date</th>
+
+                            <th>End Date</th>
+
+                            <th>Reason</th>
+
+                            <th>Status</th>
+
+                            <th>Review Comment</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for leave in leaves %}
+
+                        <tr>
+
+                            <!-- ID -->
+
+                            <td class="px-3 fw-semibold">
+                                {{ leave.id }}
+                            </td>
+
+
+                            <!-- Employee -->
+
+                            <td>
+
+                                <strong>
+                                    {{ leave.employee.get_full_name|default:leave.employee.username }}
+                                </strong>
+
+                                <br>
+
+                                <small class="text-muted">
+                                    @{{ leave.employee.username }}
+                                </small>
+
+                            </td>
+
+
+                            <!-- Leave Type -->
+
+                            <td>
+
+                                <span class="fw-semibold">
+                                    {{ leave.get_leave_type_display }}
+                                </span>
+
+                            </td>
+
+
+                            <!-- Start -->
+
+                            <td>
+                                {{ leave.start_date|date:"d M Y" }}
+                            </td>
+
+
+                            <!-- End -->
+
+                            <td>
+                                {{ leave.end_date|date:"d M Y" }}
+                            </td>
+
+
+                            <!-- Reason -->
+
+                            <td>
+
+                                <span title="{{ leave.reason }}">
+                                    {{ leave.reason|truncatechars:40 }}
+                                </span>
+
+                            </td>
+
+
+                            <!-- Status -->
+
+                            <td>
+
+                                {% if leave.status == 'APPROVED' %}
+
+                                    <span class="badge bg-success">
+                                        Approved
+                                    </span>
+
+                                {% elif leave.status == 'REJECTED' %}
+
+                                    <span class="badge bg-danger">
+                                        Rejected
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Review Comment -->
+
+                            <td>
+
+                                {% if leave.review_comment %}
+
+                                    <span title="{{ leave.review_comment }}">
+                                        {{ leave.review_comment|truncatechars:35 }}
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        —
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Action -->
+
+                            <td style="min-width: 220px;">
+
+                                {% if leave.status == 'PENDING' %}
+
+                                    <form method="POST"
+                                          action="{% url 'review_leave' leave.id %}">
+
+                                        {% csrf_token %}
+
+                                        <textarea
+                                            name="review_comment"
+                                            class="form-control form-control-sm mb-2"
+                                            rows="2"
+                                            placeholder="Optional review comment"></textarea>
+
+
+                                        <div class="d-flex gap-2">
+
+                                            <button
+                                                type="submit"
+                                                name="action"
+                                                value="approve"
+                                                class="btn btn-success btn-sm">
+
+                                                ✓ Approve
+
+                                            </button>
+
+
+                                            <button
+                                                type="submit"
+                                                name="action"
+                                                value="reject"
+                                                class="btn btn-danger btn-sm">
+
+                                                ✕ Reject
+
+                                            </button>
+
+                                        </div>
+
+                                    </form>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary">
+                                        Reviewed
+                                    </span>
+
+                                    {% if leave.reviewed_by %}
+
+                                        <div class="mt-1">
+
+                                            <small class="text-muted">
+                                                By:
+                                                {{ leave.reviewed_by.username }}
+                                            </small>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% else %}
+
+    <!-- Empty State -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body text-center py-5">
+
+            <div style="font-size: 55px;">
+                📋
+            </div>
+
+            <h4 class="fw-bold mt-3">
+                No Leave Requests Found
+            </h4>
+
+            <p class="text-muted mb-0">
+                Employee leave applications will appear here.
+            </p>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

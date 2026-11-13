@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+
+        <div>
+            <h2 class="fw-bold mb-1">My Leave Requests</h2>
+            <p class="text-muted mb-0">
+                View your leave applications and their current status.
+            </p>
+        </div>
+
+        <a href="{% url 'apply_leave' %}"
+           class="btn btn-primary">
+            + Apply Leave
+        </a>
+
+    </div>
+
+
+    {% if leaves %}
+
+    <!-- Leave Table -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white p-3">
+
+            <h5 class="fw-bold mb-1">
+                Leave History
+            </h5>
+
+            <small class="text-muted">
+                Your submitted leave applications
+            </small>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th class="px-3">#</th>
+                            <th>Leave Type</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Review Comment</th>
+                            <th>Applied On</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for leave in leaves %}
+
+                        <tr>
+
+                            <td class="px-3 fw-semibold">
+                                {{ leave.id }}
+                            </td>
+
+                            <td>
+                                <strong>
+                                    {{ leave.get_leave_type_display }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ leave.start_date|date:"d M Y" }}
+                            </td>
+
+                            <td>
+                                {{ leave.end_date|date:"d M Y" }}
+                            </td>
+
+                            <td>
+                                <span
+                                    title="{{ leave.reason }}">
+                                    {{ leave.reason|truncatechars:35 }}
+                                </span>
+                            </td>
+
+
+                            <!-- Status -->
+
+                            <td>
+
+                                {% if leave.status == 'APPROVED' %}
+
+                                    <span class="badge bg-success">
+                                        Approved
+                                    </span>
+
+                                {% elif leave.status == 'REJECTED' %}
+
+                                    <span class="badge bg-danger">
+                                        Rejected
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Review Comment -->
+
+                            <td>
+
+                                {% if leave.review_comment %}
+
+                                    <span
+                                        title="{{ leave.review_comment }}">
+                                        {{ leave.review_comment|truncatechars:35 }}
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        —
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Applied On -->
+
+                            <td>
+                                {{ leave.applied_on|date:"d M Y" }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% else %}
+
+    <!-- Empty State -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body text-center py-5">
+
+            <div style="font-size: 55px;">
+                📝
+            </div>
+
+            <h4 class="fw-bold mt-3">
+                No Leave Requests Yet
+            </h4>
+
+            <p class="text-muted">
+                You have not submitted any leave request yet.
+            </p>
+
+            <a href="{% url 'apply_leave' %}"
+               class="btn btn-primary">
+                Apply for Leave
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- Navigation -->
+
+    <div class="mt-4">
+
+        <a href="{% url 'employee_dashboard' %}"
+           class="btn btn-outline-secondary">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

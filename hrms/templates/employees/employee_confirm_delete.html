@@ -1,0 +1,87 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+                <div class="bg-danger text-white text-center py-4">
+                    <div class="mb-2">
+                        <span class="display-5">⚠️</span>
+                    </div>
+                    <h3 class="fw-bold mb-1">Delete Employee</h3>
+                    <p class="mb-0 small">
+                        Confirm before continuing
+                    </p>
+                </div>
+
+                <div class="card-body p-4 p-md-5 text-center">
+
+                    <h5 class="fw-bold text-dark mb-3">
+                        Are you sure?
+                    </h5>
+
+                    <p class="text-secondary mb-4">
+                        You are about to delete the employee
+                        record for:
+                    </p>
+
+                    <div class="bg-light rounded-3 p-3 mb-4">
+                        <h5 class="fw-bold text-dark mb-1">
+                            {{ employee.first_name }}
+                            {{ employee.last_name }}
+                        </h5>
+
+                        <div class="text-secondary small">
+                            Employee ID: {{ employee.employee_id }}
+                        </div>
+
+                        <div class="text-secondary small">
+                            {{ employee.email }}
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning text-start small">
+                        <strong>Warning:</strong>
+                        This action may permanently delete the
+                        employee's linked user account and related
+                        data. Please verify before proceeding.
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="d-flex gap-2 justify-content-center mt-4">
+
+                            <a href="{% url 'employee_list' %}"
+                               class="btn btn-outline-secondary px-4 py-2 rounded-3">
+                                Cancel
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-danger px-4 py-2 rounded-3 fw-semibold">
+                                🗑 Delete Employee
+                            </button>
+
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+
+            <p class="text-center text-muted small mt-3">
+                HR Management System · Employee Management
+            </p>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

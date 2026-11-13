@@ -1,0 +1,270 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-1">Recruitment Dashboard</h2>
+            <p class="text-muted mb-0">
+                Manage job openings and track candidate applications.
+            </p>
+        </div>
+
+        <div>
+            <a href="{% url 'create_job' %}" class="btn btn-primary">
+                + Add Job
+            </a>
+            <a href="{% url 'application_list' %}" class="btn btn-outline-primary">
+                Applications
+            </a>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Statistics -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-2">Total Jobs</p>
+                    <h2 class="fw-bold mb-0">{{ total_jobs }}</h2>
+                    <small class="text-muted">All job openings</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-2">Active Jobs</p>
+                    <h2 class="fw-bold text-success mb-0">{{ active_jobs }}</h2>
+                    <small class="text-muted">Currently available</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-2">Total Applications</p>
+                    <h2 class="fw-bold text-primary mb-0">{{ total_applications }}</h2>
+                    <small class="text-muted">Candidates applied</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-2">Pending Applications</p>
+                    <h2 class="fw-bold text-warning mb-0">{{ pending_applications }}</h2>
+                    <small class="text-muted">Awaiting review</small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Job Openings -->
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-header bg-white p-3">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h5 class="fw-bold mb-1">Job Openings</h5>
+                    <small class="text-muted">Current recruitment opportunities</small>
+                </div>
+
+                <a href="{% url 'create_job' %}" class="btn btn-sm btn-outline-primary">
+                    + Add Job
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th class="px-3">Job Title</th>
+                            <th>Department</th>
+                            <th>Location</th>
+                            <th>Type</th>
+                            <th>Vacancies</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for job in jobs %}
+                        <tr>
+                            <td class="px-3">
+                                <strong>{{ job.title }}</strong>
+                            </td>
+
+                            <td>{{ job.department }}</td>
+                            <td>{{ job.location }}</td>
+                            <td>{{ job.get_job_type_display }}</td>
+                            <td>{{ job.vacancies }}</td>
+
+                            <td>
+                                {% if job.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <div class="d-flex flex-wrap gap-1">
+
+                                    <a href="{% url 'edit_job' job.id %}"
+                                       class="btn btn-sm btn-primary">
+                                        Edit
+                                    </a>
+
+                                    <form method="POST"
+                                          action="{% url 'toggle_job_status' job.id %}">
+                                        {% csrf_token %}
+
+                                        {% if job.is_active %}
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-warning">
+                                                Deactivate
+                                            </button>
+                                        {% else %}
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-success">
+                                                Activate
+                                            </button>
+                                        {% endif %}
+                                    </form>
+
+                                    <a href="{% url 'delete_job' job.id %}"
+                                       class="btn btn-sm btn-danger">
+                                        Delete
+                                    </a>
+
+                                </div>
+                            </td>
+                        </tr>
+
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                No job openings found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Candidate Applications -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white p-3">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h5 class="fw-bold mb-1">Candidate Applications</h5>
+                    <small class="text-muted">Review submitted job applications</small>
+                </div>
+
+                <a href="{% url 'application_list' %}"
+                   class="btn btn-sm btn-outline-primary">
+                    Manage Applications
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th class="px-3">Candidate</th>
+                            <th>Job</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Applied On</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for application in applications %}
+                        <tr>
+                            <td class="px-3">
+                                <strong>{{ application.applicant_name }}</strong>
+                            </td>
+
+                            <td>{{ application.job.title }}</td>
+                            <td>{{ application.email }}</td>
+                            <td>{{ application.phone }}</td>
+
+                            <td>
+                                {% if application.status == 'APPLIED' %}
+                                    <span class="badge bg-warning text-dark">Applied</span>
+                                {% elif application.status == 'SHORTLISTED' %}
+                                    <span class="badge bg-info text-dark">Shortlisted</span>
+                                {% elif application.status == 'INTERVIEW' %}
+                                    <span class="badge bg-primary">Interview</span>
+                                {% elif application.status == 'SELECTED' %}
+                                    <span class="badge bg-success">Selected</span>
+                                {% elif application.status == 'REJECTED' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">
+                                        {{ application.get_status_display }}
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td>{{ application.applied_on|date:"d M Y" }}</td>
+                        </tr>
+
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No applications received yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Home -->
+    <div class="mt-4">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+            ← Back to Home
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}
+

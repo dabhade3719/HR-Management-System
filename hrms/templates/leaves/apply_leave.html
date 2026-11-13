@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="mb-4">
+        <a href="{% url 'my_leaves' %}"
+           class="text-decoration-none">
+            ← Back to My Leaves
+        </a>
+    </div>
+
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7">
+
+            <div class="card border-0 shadow-sm">
+
+                <!-- Card Header -->
+
+                <div class="card-header bg-primary text-white p-4">
+
+                    <h3 class="fw-bold mb-1">
+                        Apply for Leave
+                    </h3>
+
+                    <p class="mb-0">
+                        Submit a new leave request to HR.
+                    </p>
+
+                </div>
+
+
+                <!-- Card Body -->
+
+                <div class="card-body p-4">
+
+
+                    <!-- Messages -->
+
+                    {% if messages %}
+
+                        {% for message in messages %}
+
+                            <div class="alert alert-warning">
+                                {{ message }}
+                            </div>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+
+                        <!-- Leave Type -->
+
+                        <div class="mb-3">
+
+                            <label for="leave_type"
+                                   class="form-label fw-semibold">
+
+                                Leave Type
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <select
+                                id="leave_type"
+                                name="leave_type"
+                                class="form-select"
+                                required>
+
+                                <option value="">
+                                    Select Leave Type
+                                </option>
+
+                                <option value="CASUAL">
+                                    Casual Leave
+                                </option>
+
+                                <option value="SICK">
+                                    Sick Leave
+                                </option>
+
+                                <option value="PAID">
+                                    Paid Leave
+                                </option>
+
+                                <option value="UNPAID">
+                                    Unpaid Leave
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Dates -->
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label for="start_date"
+                                       class="form-label fw-semibold">
+
+                                    Start Date
+                                    <span class="text-danger">*</span>
+
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="start_date"
+                                    name="start_date"
+                                    class="form-control"
+                                    min="{% now 'Y-m-d' %}"
+                                    required>
+
+                            </div>
+
+
+                            <div class="col-md-6 mb-3">
+
+                                <label for="end_date"
+                                       class="form-label fw-semibold">
+
+                                    End Date
+                                    <span class="text-danger">*</span>
+
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="end_date"
+                                    name="end_date"
+                                    class="form-control"
+                                    min="{% now 'Y-m-d' %}"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Reason -->
+
+                        <div class="mb-4">
+
+                            <label for="reason"
+                                   class="form-label fw-semibold">
+
+                                Reason for Leave
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <textarea
+                                id="reason"
+                                name="reason"
+                                class="form-control"
+                                rows="5"
+                                placeholder="Explain the reason for your leave..."
+                                required></textarea>
+
+                            <div class="form-text">
+                                Please provide a clear reason for your leave request.
+                            </div>
+
+                        </div>
+
+
+                        <!-- Buttons -->
+
+                        <div class="d-flex gap-2 flex-wrap">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary px-4">
+
+                                Submit Leave Request
+
+                            </button>
+
+
+                            <a
+                                href="{% url 'my_leaves' %}"
+                                class="btn btn-outline-secondary px-4">
+
+                                My Leave Requests
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Date Validation -->
+
+<script>
+
+    const startDate = document.getElementById("start_date");
+    const endDate = document.getElementById("end_date");
+
+    startDate.addEventListener("change", function () {
+
+        endDate.min = this.value;
+
+    });
+
+</script>
+
+{% endblock %}

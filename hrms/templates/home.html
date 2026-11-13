@@ -1,0 +1,239 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS | Human Resource Management</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #172554;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 8%;
+            background: white;
+            box-shadow: 0 2px 10px #00000010;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        nav a {
+            text-decoration: none;
+            margin-left: 22px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 22px;
+            background: #2563eb;
+            color: white;
+            border-radius: 7px;
+            text-decoration: none;
+            border: none;
+        }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            padding: 90px 8%;
+            min-height: 480px;
+        }
+
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            line-height: 1.2;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 span {
+            color: #2563eb;
+        }
+
+        .hero p {
+            color: #64748b;
+            font-size: 17px;
+            line-height: 1.8;
+            margin-bottom: 28px;
+        }
+
+        .hero-card {
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 10px 35px #00000012;
+            width: 300px;
+            text-align: center;
+        }
+
+        .hero-card h2 {
+            color: #2563eb;
+            font-size: 38px;
+            margin: 18px 0 8px;
+        }
+
+        .features {
+            padding: 45px 8% 70px;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .features > p {
+            color: #64748b;
+            margin-bottom: 35px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .feature {
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #00000008;
+        }
+
+        .feature h3 {
+            margin: 12px 0;
+        }
+
+        .feature p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            color: #64748b;
+            background: white;
+        }
+
+        @media (max-width: 750px) {
+            nav {
+                padding: 18px 5%;
+                flex-wrap: wrap;
+                gap: 18px;
+            }
+
+            nav a {
+                margin-left: 8px;
+            }
+
+            .hero {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 55px 6%;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero-card {
+                width: 100%;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">HRMS</div>
+
+        <div>
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}" class="btn">Register</a>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Manage Your Workforce <span>Smarter.</span></h1>
+
+            <p>
+                A simple Human Resource Management System to manage
+                employees, attendance, leave requests and HR activities
+                from one place.
+            </p>
+
+            <a href="{% url 'login' %}" class="btn">Get Started →</a>
+        </div>
+
+        <div class="hero-card">
+            <div style="font-size: 55px;">👥</div>
+            <h2>HRMS</h2>
+            <p>One platform for employee and workforce management.</p>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <h2>Powerful Features</h2>
+        <p>Everything you need to manage your HR activities.</p>
+
+        <div class="feature-grid">
+            <div class="feature">
+                <div style="font-size: 35px;">👨‍💼</div>
+                <h3>Employee Management</h3>
+                <p>Manage employee information and department records.</p>
+            </div>
+
+            <div class="feature">
+                <div style="font-size: 35px;">📅</div>
+                <h3>Attendance Tracking</h3>
+                <p>Track employee attendance and view attendance reports.</p>
+            </div>
+
+            <div class="feature">
+                <div style="font-size: 35px;">📝</div>
+                <h3>Leave Management</h3>
+                <p>Apply for leave and manage approval requests.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        © 2026 HRMS - Human Resource Management System
+    </footer>
+    <script src="{% static 'js/main.js' %}" defer></script>
+</body>
+</html>
+

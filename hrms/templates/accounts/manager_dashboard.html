@@ -1,0 +1,293 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manager Dashboard | HRMS</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            color: white;
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 12px #0000001a;
+        }
+
+        .navbar h2 {
+            font-size: 23px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .logout {
+            background: #dc2626;
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 7px;
+            font-weight: bold;
+        }
+
+        .logout:hover {
+            background: #b91c1c;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px #0000000d;
+            border-left: 5px solid #2563eb;
+        }
+
+        .welcome h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #64748b;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px #0000000d;
+            transition: 0.25s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px #00000015;
+        }
+
+        .icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 12px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 29px;
+            margin-bottom: 18px;
+        }
+
+        .card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #64748b;
+            line-height: 1.5;
+            min-height: 48px;
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .card a {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 10px 17px;
+            border-radius: 7px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .card a:hover {
+            background: #1d4ed8;
+        }
+
+        .card a.secondary {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .card a.secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .card span.soon {
+            display: inline-block;
+            background: #e2e8f0;
+            color: #64748b;
+            padding: 10px 17px;
+            border-radius: 7px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 35px 20px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        @media (max-width: 850px) {
+
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .user-name {
+                display: none;
+            }
+        }
+
+        @media (max-width: 550px) {
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar h2 {
+                font-size: 18px;
+            }
+
+            .welcome h1 {
+                font-size: 24px;
+            }
+
+            .welcome {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <h2>HRMS | Manager Dashboard</h2>
+        <div class="user-info">
+            <span class="user-name">{{ request.user.username }}</span>
+            <a href="{% url 'logout' %}" class="logout">Logout</a>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <section class="welcome">
+            <h1>Welcome, {% if request.user.first_name %}{{ request.user.first_name }}{% else %}{{ request.user.username }}{% endif %}!</h1>
+            <p>Manage your team, performance reviews and your own profile from one place.</p>
+        </section>
+
+        <section class="dashboard-grid">
+
+            <div class="card">
+                <div class="icon">👤</div>
+                <h3>My Profile</h3>
+                <p>View and update your personal information and profile photo.</p>
+                <div class="button-group">
+                    <a href="{% url 'employee_profile' %}">View Profile</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="icon">📈</div>
+                <h3>Team Performance</h3>
+                <p>Review and rate the performance of your team members.</p>
+                <div class="button-group">
+                    <a href="{% url 'performance_list' %}">View Reviews</a>
+                    <a href="{% url 'performance_create' %}" class="secondary">New Review</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="icon">📝</div>
+                <h3>My Leaves</h3>
+                <p>Apply for your own leave and track its status.</p>
+                <div class="button-group">
+                    <a href="{% url 'apply_leave' %}">Apply Leave</a>
+                    <a href="{% url 'my_leaves' %}" class="secondary">My Leaves</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="icon">👥</div>
+                <h3>My Team</h3>
+                <p>Team member list and details.</p>
+                <div class="button-group">
+                    <span class="soon">Coming soon</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="icon">📅</div>
+                <h3>Team Attendance</h3>
+                <p>Check attendance of your team.</p>
+                <div class="button-group">
+                    <span class="soon">Coming soon</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="icon">✅</div>
+                <h3>Leave Requests</h3>
+                <p>Approve or reject team leave requests.</p>
+                <div class="button-group">
+                    <span class="soon">Coming soon</span>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        © 2026 HRMS - Human Resource Management System
+    </footer>
+    <script src="{% static 'js/main.js' %}" defer></script>
+
+</body>
+</html>

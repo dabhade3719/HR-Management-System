@@ -1,0 +1,44 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Mark Attendance | HRMS{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h2 class="fw-bold">Mark Attendance</h2>
+    <p class="text-muted">Record daily employee attendance.</p>
+</div>
+
+<div class="content-card">
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    {{ field.label }}
+                </label>
+
+                {{ field }}
+
+                {% for error in field.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">
+            Save Attendance
+        </button>
+
+        <a href="{% url 'attendance_list' %}"
+           class="btn btn-outline-secondary">
+            Cancel
+        </a>
+    </form>
+
+</div>
+
+{% endblock %}

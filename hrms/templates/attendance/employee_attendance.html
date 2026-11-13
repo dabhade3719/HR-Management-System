@@ -1,0 +1,154 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <h2 class="fw-bold">My Attendance</h2>
+                <p class="text-muted">
+                    Employee Check-in / Check-out
+                </p>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                        {{ message }}
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert">
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Attendance Card -->
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+                        <h5 class="text-muted">Today's Date</h5>
+
+                        <h4 class="fw-bold">
+                            {{ today|date:"d M Y" }}
+                        </h4>
+                    </div>
+
+                    <hr>
+
+                    <!-- Check-in Time -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Check-in Time</span>
+
+                        <strong>
+                            {% if record and record.check_in %}
+                                {{ record.check_in|time:"h:i A" }}
+                            {% else %}
+                                Not Checked In
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <!-- Check-out Time -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Check-out Time</span>
+
+                        <strong>
+                            {% if record and record.check_out %}
+                                {{ record.check_out|time:"h:i A" }}
+                            {% else %}
+                                Not Checked Out
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <!-- Working Hours -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Working Hours</span>
+
+                        <strong>
+                            {% if record %}
+                                {{ record.working_hours }} hrs
+                            {% else %}
+                                0 hrs
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="text-center my-4">
+
+                        {% if record and record.check_out %}
+                            <span class="badge bg-success fs-6">
+                                Work Completed
+                            </span>
+
+                        {% elif record and record.check_in %}
+                            <span class="badge bg-primary fs-6">
+                                Currently Working
+                            </span>
+
+                        {% else %}
+                            <span class="badge bg-secondary fs-6">
+                                Not Checked In
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        {% if not record or not record.check_in %}
+
+                            <button
+                                type="submit"
+                                name="action"
+                                value="check_in"
+                                class="btn btn-success btn-lg w-100">
+                                Check In
+                            </button>
+
+                        {% elif not record.check_out %}
+
+                            <button
+                                type="submit"
+                                name="action"
+                                value="check_out"
+                                class="btn btn-danger btn-lg w-100">
+                                Check Out
+                            </button>
+
+                        {% else %}
+
+                            <button
+                                type="button"
+                                class="btn btn-secondary btn-lg w-100"
+                                disabled>
+                                Attendance Completed
+                            </button>
+
+                        {% endif %}
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+```
